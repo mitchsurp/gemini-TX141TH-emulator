@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Crosse Flipper Gen</title>
+    <style>
+        :root {
+            --primary: #ff8c00;
+            --secondary: #333;
+            --bg: #1a1a1a;
+            --text: #e0e0e0;
+            --card-bg: #2d2d2d;
+            --success: #00ff00;
+            --error: #ff4500;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .main-wrapper {
+            display: flex;
+            gap: 2rem;
+            max-width: 900px;
+            width: 100%;
+            padding: 2rem;
+            z-index: 1;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #444;
+            flex-shrink: 0;
+        }
+
+        .results-box {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        /* Animated background elements */
+        .blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(45deg, var(--primary), #ff4500);
+            filter: blur(100px);
+            border-radius: 50%;
+            z-index: 0;
+            opacity: 0.1;
+            animation: move 30s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-30%, -30%); }
+            to { transform: translate(30%, 30%); }
+        }
+
+        h1, h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(255, 140, 0, 0.3);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 0.8rem;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #ffa500;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .secondary-btn {
+            background-color: #444;
+            border: 1px solid #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .cancel-btn {
+            background-color: var(--error);
+        }
+
+        .discover-btn {
+            width: auto;
+            margin-top: 0;
+            padding: 10px 15px;
+            font-size: 0.8rem;
+        }
+
+        .advanced-section {
+            border-top: 1px solid #444;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .advanced-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #888;
+            transition: color 0.3s;
+            margin-bottom: 0.5rem;
+        }
+
+        .advanced-header:hover {
+            color: var(--primary);
+        }
+
+        .footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .flipper-icon {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: #1a1a1a;
+            color: var(--success);
+            border: 1px solid #444;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            resize: none;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .status-msg {
+            margin-top: 1rem;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .status-success {
+            background-color: rgba(0, 255, 0, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            display: block;
+        }
+
+        .status-error {
+            background-color: rgba(255, 69, 0, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            display: block;
+        }
+
+        .repeat-info {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="blob"></div>
+    <div class="main-wrapper">
+        <div class="container">
+            <div class="flipper-icon">🐬</div>
+            <h1>La Crosse Gen</h1>
+            <form id="gen-form">
+                <div class="input-group">
+                    <label for="temperature">Temperature (°F)</label>
+                    <input type="number" step="0.1" id="temperature" name="temperature" value="61.0" required>
+                </div>
+                <div class="input-group">
+                    <label for="humidity">Humidity (%)</label>
+                    <input type="number" step="1" id="humidity" name="humidity" value="50" required>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-header" onclick="toggleAdvanced()">
+                        <span>Broadlink RM4 Pro</span>
+                        <span id="arrow">▼</span>
+                    </div>
+                    <div id="advanced-content" style="display: block;">
+                        <div class="input-group">
+                            <label for="broadlink_ip">IP Address</label>
+                            <div class="input-row">
+                                <input type="text" id="broadlink_ip" name="broadlink_ip" placeholder="192.168.1.50">
+                                <button type="button" class="secondary-btn discover-btn" onclick="discoverMac()">Discover</button>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="broadlink_mac">MAC Address</label>
+                            <input type="text" id="broadlink_mac" name="broadlink_mac" placeholder="AA:BB:CC:DD:EE:FF">
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.5rem;">
+                            <div class="input-group" style="flex: 1;">
+                                <label for="repeat_interval">Every (s)</label>
+                                <input type="number" id="repeat_interval" value="1" min="1">
+                            </div>
+                            <div class="input-group" style="flex: 1;">
+                                <label for="repeat_duration">For (s)</label>
+                                <input type="number" id="repeat_duration" value="10" min="1">
+                            </div>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="repeat_infinite">
+                            <label for="repeat_infinite">Send Infinitely</label>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="broadlink_repeats">Internal RF Repeats</label>
+                            <input type="number" id="broadlink_repeats" name="broadlink_repeats" value="6" min="1" max="20">
+                        </div>
+
+                        <button type="button" id="send-btn" class="secondary-btn" onclick="startSending()">Send to RM4 Pro</button>
+                        <button type="button" id="cancel-btn" class="cancel-btn" onclick="stopSending()" style="display: none;">Cancel Infinite Send</button>
+                    </div>
+                </div>
+
+                <button type="button" onclick="downloadSub()">Download .sub File</button>
+            </form>
+            <div class="footer">
+                Generates RAW data compatible with TX141TH-BV2
+            </div>
+        </div>
+
+        <div class="results-box">
+            <h2>Results</h2>
+            <div id="status-msg" class="status-msg"></div>
+            <div id="repeat-status" class="repeat-info" style="display: none;">Sending...</div>
+            
+            <label style="margin-top: 1rem;">Base64 Payload (Home Assistant):</label>
+            <textarea id="b64-output" readonly placeholder="Base64 code will appear here..."></textarea>
+            <button onclick="copyToClipboard()" id="copy-btn" disabled>Copy to Clipboard</button>
+            
+            <div style="margin-top: 1rem; font-size: 0.8rem; color: #666;">
+                The payload is updated automatically during repeated sends if you change the temperature or humidity.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sendInterval = null;
+        let stopTimeout = null;
+
+        function toggleAdvanced() {
+            var content = document.getElementById("advanced-content");
+            var arrow = document.getElementById("arrow");
+            if (content.style.display === "none") {
+                content.style.display = "block";
+                arrow.innerHTML = "▲";
+            } else {
+                content.style.display = "none";
+                arrow.innerHTML = "▼";
+            }
+        }
+
+        async function discoverMac() {
+            const ip = document.getElementById('broadlink_ip').value;
+            if (!ip) {
+                showStatus("Please enter an IP address first", "error");
+                return;
+            }
+            
+            showStatus("Discovering device...", "success");
+            try {
+                const response = await fetch('/discover_mac', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ip: ip })
+                });
+                const data = await response.json();
+                if (data.mac) {
+                    document.getElementById('broadlink_mac').value = data.mac;
+                    showStatus("MAC Address found!", "success");
+                } else {
+                    showStatus(data.error || "Could not discover MAC", "error");
+                }
+            } catch (e) {
+                showStatus("Discovery failed: " + e, "error");
+            }
+        }
+
+        async function sendOne() {
+            const form = document.getElementById('gen-form');
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+            
+            // Add repeats specifically as it might not be in the loop correctly
+            data['broadlink_repeats'] = document.getElementById('broadlink_repeats').value;
+
+            try {
+                const response = await fetch('/send_broadlink', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.status === "success") {
+                    document.getElementById('b64-output').value = result.b64;
+                    document.getElementById('copy-btn').disabled = false;
+                    return true;
+                } else {
+                    showStatus(result.error || "Send failed", "error");
+                    return false;
+                }
+            } catch (e) {
+                showStatus("Error: " + e, "error");
+                return false;
+            }
+        }
+
+        function startSending() {
+            stopSending(); // Clear any existing
+
+            const isInfinite = document.getElementById('repeat_infinite').checked;
+            const intervalS = parseInt(document.getElementById('repeat_interval').value) || 1;
+            const durationS = parseInt(document.getElementById('repeat_duration').value) || 10;
+
+            document.getElementById('send-btn').disabled = true;
+            document.getElementById('cancel-btn').style.display = isInfinite ? 'block' : 'none';
+            document.getElementById('repeat-status').style.display = 'block';
+            showStatus("Starting transmission...", "success");
+
+            // Send immediately
+            sendOne();
+
+            // Set interval
+            sendInterval = setInterval(sendOne, intervalS * 1000);
+
+            if (!isInfinite) {
+                stopTimeout = setTimeout(() => {
+                    stopSending();
+                    showStatus("Timed transmission complete", "success");
+                }, durationS * 1000);
+            }
+        }
+
+        function stopSending() {
+            if (sendInterval) clearInterval(sendInterval);
+            if (stopTimeout) clearTimeout(stopTimeout);
+            sendInterval = null;
+            stopTimeout = null;
+
+            document.getElementById('send-btn').disabled = false;
+            document.getElementById('cancel-btn').style.display = 'none';
+            document.getElementById('repeat-status').style.display = 'none';
+        }
+
+        function showStatus(msg, type) {
+            const statusBox = document.getElementById('status-msg');
+            statusBox.innerHTML = msg;
+            statusBox.className = 'status-msg status-' + type;
+            statusBox.style.display = 'block';
+        }
+
+        function copyToClipboard() {
+            const textarea = document.getElementById('b64-output');
+            textarea.select();
+            navigator.clipboard.writeText(textarea.value);
+            const btn = document.getElementById('copy-btn');
+            const oldText = btn.innerText;
+            btn.innerText = "Copied!";
+            setTimeout(() => btn.innerText = oldText, 2000);
+        }
+
+        function downloadSub() {
+            const form = document.getElementById('gen-form');
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+            
+            // Create a temporary form to trigger the download
+            const tempForm = document.createElement('form');
+            tempForm.method = 'POST';
+            tempForm.action = '/generate';
+            
+            for (const pair of formData.entries()) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = pair[0];
+                input.value = pair[1];
+                tempForm.appendChild(input);
+            }
+            
+            document.body.appendChild(tempForm);
+            tempForm.submit();
+            document.body.removeChild(tempForm);
+        }
+    </script>
+</body>
+</html>
